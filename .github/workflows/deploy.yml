@@ -2,7 +2,21 @@ name: Deploy
 
 on:
   workflow_call:
-
+    secrets:
+      ACCESS_TOKEN:
+        required: true
+      ENV:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_KEY:
+        required: true
+      SSH_USERNAME:
+        required: true
+      SSL_CERTIFICATE:
+        required: true
+      SSL_PRIVATE_KEY:
+        required: true
 jobs:
   deploy:
     runs-on: ubuntu-latest
