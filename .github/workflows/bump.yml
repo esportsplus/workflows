@@ -1,0 +1,19 @@
+name: Bump
+on:
+  push:
+    branches: '**' # only trigger on branches, not on tags
+permissions: 
+  contents: write
+jobs: 
+  bump:
+    name: 🆕 Version bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+      - name: ⏫ Bumping version
+        uses: jpb06/bump-package@latest
+        with:
+          major-keywords: BREAKING CHANGE
+          minor-keywords: feat,minor
+          patch-keywords: fix,chore
