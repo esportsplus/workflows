@@ -9,7 +9,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    production-dependencies:
-      dependency-type: "production"
-    development-dependencies:
-      dependency-type: "development"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
