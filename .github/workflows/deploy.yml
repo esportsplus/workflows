@@ -1,11 +1,11 @@
-name: Deploy
-
+name: deploy
 on:
   workflow_call:
     secrets:
       ACCESS_TOKEN:
         required: true
       DOCKER_COMPOSE_CONFIG:
+        required: false
       ENV:
         required: true
       SSH_HOST:
@@ -22,7 +22,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy
+      - name: deploy
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.SSH_HOST }}
