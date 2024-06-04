@@ -2,6 +2,10 @@ name: publish to npm
 on:
   release:
     types: [published]
+  workflow_call:
+    secrets:
+      NPM_TOKEN_PUBLISHING:
+        required: true
   workflow_dispatch:
   workflow_run:
     workflows: [bump]
@@ -15,7 +19,6 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
