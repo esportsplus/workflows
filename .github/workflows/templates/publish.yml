@@ -8,7 +8,7 @@ on:
     types:
       - completed
 jobs:
-  bump:
+  publish:
     secrets:
         NODE_AUTH_TOKEN : ${{ secrets.NPM_TOKEN_PUBLISHING  }}
     uses: esportsplus/workflows/.github/workflows/publish.yml@main
