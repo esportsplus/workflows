@@ -4,7 +4,7 @@ on:
     types: [published]
   workflow_call:
     secrets:
-      NPM_TOKEN_PUBLISHING:
+      NODE_AUTH_TOKEN:
         required: true
   workflow_dispatch:
   workflow_run:
@@ -25,7 +25,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm i
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_PUBLISHING }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_PUBLISHING }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
