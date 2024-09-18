@@ -1,6 +1,9 @@
 name: pages
 on:
   workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
 concurrency:
   group: "pages"
   cancel-in-progress: false
