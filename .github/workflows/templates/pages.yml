@@ -1,0 +1,7 @@
+name: pages
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    uses: esportsplus/workflows/.github/workflows/pages.yml@main
