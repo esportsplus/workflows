@@ -64,6 +64,9 @@ jobs:
               sudo apt-get upgrade -y
               sudo apt-get dist-upgrade -y
 
+              # Required for crypto projects
+              sudo apt-get install build-essentials -y
+
               # Install Docker
                 # Add Docker's official GPG key:
                 sudo apt-get update -y
