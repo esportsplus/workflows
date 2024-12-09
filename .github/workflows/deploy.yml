@@ -4,6 +4,8 @@ on:
     secrets:
       ACCESS_TOKEN:
         required: true
+      DESTINATION:
+        required: false
       DOCKER_COMPOSE_CONFIG:
         required: false
       ENV:
