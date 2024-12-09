@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
 
           script: |
-            DOCKER_COMPOSE_CONFIG=${{ secrets.DOCKER_COMPOSE_CONFIG || '-f docker-compose.yml' }}
+            DOCKER_COMPOSE_CONFIG="${{ secrets.DOCKER_COMPOSE_CONFIG || '-f docker-compose.yml' }}"
             DESTINATION=${{ secrets.DESTINATION || './node' }}
             GITHUB_TOKEN=${{ secrets.ACCESS_TOKEN }}
             INSTALL=false
