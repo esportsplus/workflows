@@ -93,6 +93,10 @@ jobs:
 
             sudo find ${DESTINATION}/node -type f -name "docker-compose*.yml" -exec chmod 644 {} +
 
+            ls docker-compose*.yml
+            ls ./node/docker-compose*.yml
+
+
             docker compose "${DOCKER_COMPOSE_CONFIG}" build --no-cache
             docker compose "${DOCKER_COMPOSE_CONFIG}" down
             docker builder prune --all --force
