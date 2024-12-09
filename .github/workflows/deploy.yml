@@ -89,11 +89,12 @@ jobs:
               ./redis/scripts/config-host.sh
             fi
 
-            curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION}
-
-            echo "Listing contents of the nested directory:"
-            ls -la ./node
-
+            curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION} \
+              && docker compose "${DOCKER_COMPOSE_CONFIG}" build --no-cache \
+              && docker compose "${DOCKER_COMPOSE_CONFIG}" down \
+              && docker builder prune --all --force \
+              && docker volume prune --all --force \
+              && docker compose "${DOCKER_COMPOSE_CONFIG}" up -d
 
             if ${INSTALL}; then
               sudo reboot
