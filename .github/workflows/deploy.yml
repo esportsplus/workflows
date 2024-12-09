@@ -91,7 +91,7 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION}
 
-            sudo find ${DESTINATION} -type f -name "docker-compose*.yml" -exec chmod 644 {} +
+            sudo find ${DESTINATION}/node -type f -name "docker-compose*.yml" -exec chmod 644 {} +
 
             docker compose "${DOCKER_COMPOSE_CONFIG}" build --no-cache
             docker compose "${DOCKER_COMPOSE_CONFIG}" down
