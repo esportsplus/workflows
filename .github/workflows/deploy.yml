@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
 
           script: |
-            DCC=${{ secrets.DOCKER_COMPOSE_CONFIG || '-f docker-compose.yml' }}
+            DOCKER_COMPOSE_CONFIG=${{ secrets.DOCKER_COMPOSE_CONFIG || '-f docker-compose.yml' }}
             DESTINATION=${{ secrets.DESTINATION || './node' }}
             GITHUB_TOKEN=${{ secrets.ACCESS_TOKEN }}
             INSTALL=false
@@ -91,11 +91,11 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION}
 
-            docker compose ${DCC} build --no-cache
-            docker compose ${DCC} down
+            docker compose "${DOCKER_COMPOSE_CONFIG}" build --no-cache
+            docker compose "${DOCKER_COMPOSE_CONFIG}" down
             docker builder prune --all --force
             docker volume prune --all --force
-            docker compose ${DCC} up -d
+            docker compose "${DOCKER_COMPOSE_CONFIG}" up -d
 
             if ${INSTALL}; then
               sudo reboot
