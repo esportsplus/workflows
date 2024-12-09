@@ -91,13 +91,15 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION}
 
-            wait 
-
-            ls -l node/docker-compose.override.yml | awk '{print $1}'
-            ls -l ./node/docker-compose.override.yml | awk '{print $1}'
-            ls -l /var/www/node/docker-compose.override.yml | awk '{print $1}'
-              
-            
+            # List contents for debugging
+            echo "Contents of ./node directory:"
+            ls -la ./node
+          
+            # Check if override file exists
+            if [ ! -f "./node/docker-compose.override.yml" ]; then
+              echo "Error: ./node/docker-compose.override.yml does not exist."
+              exit 1
+            fi
 
             if ${INSTALL}; then
               sudo reboot
