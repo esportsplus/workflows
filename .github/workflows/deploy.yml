@@ -91,11 +91,11 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION}
 
-            wait
-
-            # List contents for debugging
-            echo "Contents of node directory:"
-            ls -la node
+            docker compose "${DOCKER_COMPOSE_CONFIG}" build --no-cache
+            docker compose "${DOCKER_COMPOSE_CONFIG}" down
+            docker builder prune --all --force
+            docker volume prune --all --force
+            docker compose "${DOCKER_COMPOSE_CONFIG}" up -d
 
             if ${INSTALL}; then
               sudo reboot
