@@ -91,8 +91,6 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DESTINATION}
 
-            echo ${DOCKER_COMPOSE_CONFIG}
-
             docker compose ${DOCKER_COMPOSE_CONFIG} build --no-cache
             docker compose ${DOCKER_COMPOSE_CONFIG} down
             docker builder prune --all --force
