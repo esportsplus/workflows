@@ -49,6 +49,7 @@ jobs:
             # Environment variables
             touch .env
             echo "${{ secrets.ENV }}" > .env
+            echo -e "\nDOCKER_GID=$(getent group docker | cut -d: -f3)" > .env
 
             # SSL certificates
             mkdir -p ./storage/ssl
