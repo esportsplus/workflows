@@ -93,7 +93,7 @@ jobs:
             docker compose ${DOCKER_COMPOSE_CONFIG} build
             docker compose ${DOCKER_COMPOSE_CONFIG} up -d
 
-            # docker system prune -a --force --volumes
+            docker system prune -a --force --volumes
 
             if ${INSTALL}; then
               sudo reboot
