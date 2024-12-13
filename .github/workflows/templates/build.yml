@@ -1,0 +1,13 @@
+name: build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    uses: esportsplus/workflows/.github/workflows/build.yml@main

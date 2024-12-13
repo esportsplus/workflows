@@ -1,0 +1,19 @@
+name: deploy
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [build]
+    types:
+      - completed
+jobs:
+  deploy:
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      DOCKER_COMPOSE_CONFIG: ${{ secrets.DOCKER_COMPOSE_CONFIG }}
+      ENV: ${{ secrets.ENV }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      SSL_CERTIFICATE: ${{ secrets.SSL_CERTIFICATE }}
+      SSL_PRIVATE_KEY: ${{ secrets.SSL_PRIVATE_KEY }}
+    uses: esportsplus/workflows/.github/workflows/deploy.yml@main

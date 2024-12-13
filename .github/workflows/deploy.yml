@@ -1,0 +1,101 @@
+name: deploy
+on:
+  workflow_call:
+    secrets:
+      ACCESS_TOKEN:
+        required: true
+      DEPLOY_DESTINATION:
+        required: false
+      DOCKER_COMPOSE_CONFIG:
+        required: false
+      ENV:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_KEY:
+        required: true
+      SSH_USERNAME:
+        required: true
+      SSL_CERTIFICATE:
+        required: true
+      SSL_PRIVATE_KEY:
+        required: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          key: ${{ secrets.SSH_KEY }}
+          username: ${{ secrets.SSH_USERNAME }}
+          script: |
+            BRANCH="build"
+            DEPLOY_DESTINATION="${{ secrets.DEPLOY_DESTINATION || './node' }}"
+            DOCKER_COMPOSE_CONFIG="${{ secrets.DOCKER_COMPOSE_CONFIG || '-f docker-compose.yml' }}"
+            GITHUB_TOKEN=${{ secrets.ACCESS_TOKEN }}
+            INSTALL=false
+            PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
+
+            mkdir -p /var/www && cd "$_"
+
+            # Delete everything in `/var/www` excluding `/var/www/storage`
+            shopt -s extglob
+            rm -rf !(storage)
+
+            curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/esportsplus/docker-compose.git .
+
+            # Environment variables
+            echo "${{ secrets.ENV }}" > .env
+            echo -e "\nDOCKER_GID=$(getent group docker | cut -d: -f3)" >> .env
+
+            # SSL certificates
+            mkdir -p ./storage/ssl
+            echo "${{ secrets.SSL_CERTIFICATE }}" > ./storage/ssl/certificate.pem
+            echo "${{ secrets.SSL_PRIVATE_KEY }}" > ./storage/ssl/key.pem
+
+            if ! command -v docker compose &> /dev/null
+            then
+              INSTALL=true
+
+              # Update package list
+              sudo apt-get update -y
+
+              # Upgrade existing extensions
+              sudo apt-get upgrade -y
+              sudo apt-get dist-upgrade -y
+
+              # Install Docker
+                # Add Docker's official GPG key:
+                sudo apt-get update -y
+                sudo apt-get install -y ca-certificates curl gnupg
+                sudo install -m 0755 -d /etc/apt/keyrings
+                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+                sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+                # Add Docker repository to Apt sources:
+                echo \
+                  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+                  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+                  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+                sudo apt-get update -y
+
+                # Install
+                sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+              # Redis host configuration
+              sudo chmod -R +x ./redis/scripts
+              ./redis/scripts/config-host.sh
+            fi
+
+            curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION} ${BRANCH}
+
+            docker compose ${DOCKER_COMPOSE_CONFIG} build
+            docker compose ${DOCKER_COMPOSE_CONFIG} up -d
+
+            docker system prune -a --force --volumes
+
+            if ${INSTALL}; then
+              sudo reboot
+            fi
