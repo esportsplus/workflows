@@ -86,6 +86,13 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
 
+            cd ./storage
+            ls
+            cd ./agent
+            ls
+
+            cd /var/www
+
             docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach
 
             docker system prune --filter until=24h --force
