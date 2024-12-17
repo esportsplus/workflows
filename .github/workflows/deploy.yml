@@ -91,7 +91,9 @@ jobs:
             docker system prune --filter until=24h --force
             docker builder prune --filter unused-for=24h --force
 
-            cd storage/agent
+            cd ./storage
+            ls
+            cd ./agent
             ls
 
             if ${INSTALL}; then
