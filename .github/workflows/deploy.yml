@@ -82,10 +82,6 @@ jobs:
 
                 # Install
                 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-              # Redis host configuration
-              sudo chmod -R +x ./redis/scripts
-              ./redis/scripts/config-host.sh
             fi
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
