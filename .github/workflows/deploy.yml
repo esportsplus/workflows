@@ -36,7 +36,6 @@ jobs:
             GITHUB_TOKEN=${{ secrets.ACCESS_TOKEN }}
             INSTALL=false
             PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
-            TEMPORARY_PUBLIC_DIRECTORY="./public"
 
             mkdir -p /var/www && cd "$_"
 
@@ -92,13 +91,15 @@ jobs:
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
 
             docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach
+            docker system prune -a --force --volumes
 
             # Refresh NGINX static assets
-            mkdir -p ${TEMPORARY_PUBLIC_DIRECTORY}
-            docker cp www-node-1:/var/www/public ${TEMPORARY_PUBLIC_DIRECTORY}
-            docker cp ${TEMPORARY_PUBLIC_DIRECTORY} nginx:/var/www/public
+            docker run --rm -v www-node-1:/var/www/public/* -v nginx:/var/www/public alpine sh -c "rsync -av --delete /var/www/public/ /var/www/public/"
 
-            docker system prune -a --force --volumes
+            # mkdir -p ./public
+            # docker cp www-node-1:/var/www/public/* ./public
+            # docker exec -ti nginx rm -r /var/www/public/*
+            # docker cp ./public/* nginx:/var/www/public
 
             if ${INSTALL}; then
               sudo reboot
