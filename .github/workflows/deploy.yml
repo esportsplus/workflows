@@ -95,7 +95,7 @@ jobs:
 
             # Refresh NGINX static assets
             mkdir -p ${TEMPORARY_PUBLIC_DIRECTORY}
-            docker cp node:/var/www/public ${TEMPORARY_PUBLIC_DIRECTORY}
+            docker cp www-node-1:/var/www/public ${TEMPORARY_PUBLIC_DIRECTORY}
             docker cp ${TEMPORARY_PUBLIC_DIRECTORY} nginx:/var/www/public
 
             docker system prune -a --force --volumes
