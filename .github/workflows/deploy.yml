@@ -88,8 +88,8 @@ jobs:
 
             docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach
 
-            docker system prune --filter until=24h
-            docker builder prune --filter unused-for=24h
+            docker system prune --filter until=24h --force
+            docker builder prune --filter unused-for=24h --force
 
             cd storage/agent
             ls
