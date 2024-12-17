@@ -90,7 +90,7 @@ jobs:
 
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
 
-            docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach
+            docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach --renew-anon-volumes
 
             docker system prune -a --force --volumes
 
