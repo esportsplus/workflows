@@ -87,7 +87,9 @@ jobs:
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
 
             docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach
-            docker system prune -a --force --volumes
+
+            docker system prune --filter until=24h
+            docker builder prune --filter unused-for=24h
 
             if ${INSTALL}; then
               sudo reboot
