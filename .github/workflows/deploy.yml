@@ -91,6 +91,9 @@ jobs:
             docker system prune --filter until=24h
             docker builder prune --filter unused-for=24h
 
+            cd storage/agent
+            ls
+
             if ${INSTALL}; then
               sudo reboot
             fi
