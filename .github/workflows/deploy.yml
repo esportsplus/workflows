@@ -93,14 +93,6 @@ jobs:
             docker compose ${DOCKER_COMPOSE_CONFIG} up --build --detach
             docker system prune -a --force --volumes
 
-            # Refresh NGINX static assets
-            docker run --rm -v www-node-1:/var/www/public/* -v nginx:/var/www/public alpine sh -c "rsync -av --delete /var/www/public/ /var/www/public/"
-
-            # mkdir -p ./public
-            # docker cp www-node-1:/var/www/public/* ./public
-            # docker exec -ti nginx rm -r /var/www/public/*
-            # docker cp ./public/* nginx:/var/www/public
-
             if ${INSTALL}; then
               sudo reboot
             fi
