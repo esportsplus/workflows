@@ -43,8 +43,6 @@ jobs:
             INSTALL=false
             PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
 
-            echo "DOCKER_COMPOSE_CONFIG: $DOCKER_COMPOSE_CONFIG"
-
             mkdir -p /var/www && cd "$_"
 
             # Delete everything in `/var/www` excluding `/var/www/storage`
@@ -112,13 +110,13 @@ jobs:
 
             docker compose ${DOCKER_COMPOSE_CONFIG} build
 
-            if [ -n "${{ secrets.DEPLOY_POSTBUILD }}" ]; then
-              IFS=$'\n'
-              for script in ${{ secrets.DEPLOY_POSTBUILD }}; do
-                chmod +x "$script"
-                "$script"
-              done
-            fi
+            # if [ -n "${{ secrets.DEPLOY_POSTBUILD }}" ]; then
+            #   IFS=$'\n'
+            #   for script in ${{ secrets.DEPLOY_POSTBUILD }}; do
+            #     chmod +x "$script"
+            #     "$script"
+            #   done
+            # fi
 
             docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
