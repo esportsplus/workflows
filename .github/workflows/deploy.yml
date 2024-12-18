@@ -110,13 +110,13 @@ jobs:
 
             docker compose ${DOCKER_COMPOSE_CONFIG} build
 
-            # if [ -n "${{ secrets.DEPLOY_POSTBUILD }}" ]; then
-            #   IFS=$'\n'
-            #   for script in ${{ secrets.DEPLOY_POSTBUILD }}; do
-            #     chmod +x "$script"
-            #     "$script"
-            #   done
-            # fi
+            if [ -n "${{ secrets.DEPLOY_POSTBUILD }}" ]; then
+              IFS=$'\n'
+              for script in ${{ secrets.DEPLOY_POSTBUILD }}; do
+                chmod +x "$script"
+                "$script"
+              done
+            fi
 
             docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
