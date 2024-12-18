@@ -43,7 +43,7 @@ jobs:
             INSTALL=false
             PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
 
-            echo "$DOCKER_COMPOSE_CONFIG"
+            echo "DOCKER_COMPOSE_CONFIG: $DOCKER_COMPOSE_CONFIG"
 
             mkdir -p /var/www && cd "$_"
 
