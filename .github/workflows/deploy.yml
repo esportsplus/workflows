@@ -39,9 +39,11 @@ jobs:
           script: |
             DEPLOY_DESTINATION="${{ secrets.DEPLOY_DESTINATION || './node' }}"
             DOCKER_COMPOSE_CONFIG="${{ secrets.DOCKER_COMPOSE_CONFIG || '-f docker-compose.yml' }}"
-            GITHUB_TOKEN=${{ secrets.ACCESS_TOKEN }}
+            GITHUB_TOKEN="${{ secrets.ACCESS_TOKEN }}"
             INSTALL=false
             PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
+
+            echo "$DOCKER_COMPOSE_CONFIG"
 
             mkdir -p /var/www && cd "$_"
 
