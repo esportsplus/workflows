@@ -7,6 +7,10 @@ jobs:
   deploy:
     secrets:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      DEPLOY_DESTINATION: ${{ secrets.DEPLOY_DESTINATION }}
+      DEPLOY_PREBUILD: ${{ secrets.DEPLOY_PREBUILD }}
+      DEPLOY_POSTBUILD: ${{ secrets.DEPLOY_POSTBUILD }}
+      DEPLOY_POSTINSTALL: ${{ secrets.DEPLOY_POSTINSTALL }}
       DOCKER_COMPOSE_CONFIG: ${{ secrets.DOCKER_COMPOSE_CONFIG }}
       ENV: ${{ secrets.ENV }}
       SSH_HOST: ${{ secrets.SSH_HOST }}

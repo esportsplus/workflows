@@ -6,6 +6,12 @@ on:
         required: true
       DEPLOY_DESTINATION:
         required: false
+      DEPLOY_PREBUILD:
+        required: false
+      DEPLOY_POSTBUILD:
+        required: false
+      DEPLOY_POSTINSTALL:
+        required: false
       DOCKER_COMPOSE_CONFIG:
         required: false
       ENV:
