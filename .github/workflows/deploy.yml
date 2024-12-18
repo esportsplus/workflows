@@ -109,7 +109,7 @@ jobs:
               done
             fi
 
-            docker compose ${DOCKER_COMPOSE_CONFIG} up --detach
+            docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
             docker system prune --filter until=24h --force
             docker builder prune --filter unused-for=24h --force
