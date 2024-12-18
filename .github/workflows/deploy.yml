@@ -92,7 +92,8 @@ jobs:
                 if [ -n "${{ secrets.DEPLOY_POSTINSTALL }}" ]; then
                   IFS=$'\n'
                   for script in ${{ secrets.DEPLOY_POSTINSTALL }}; do
-                    $script
+                    chmod +x "$script"
+                    "$script"
                   done
                 fi
             fi
@@ -102,7 +103,8 @@ jobs:
             if [ -n "${{ secrets.DEPLOY_PREBUILD }}" ]; then
               IFS=$'\n'
               for script in ${{ secrets.DEPLOY_PREBUILD }}; do
-                $script
+                chmod +x "$script"
+                "$script"
               done
             fi
 
@@ -111,7 +113,8 @@ jobs:
             if [ -n "${{ secrets.DEPLOY_POSTBUILD }}" ]; then
               IFS=$'\n'
               for script in ${{ secrets.DEPLOY_POSTBUILD }}; do
-                $script
+                chmod +x "$script"
+                "$script"
               done
             fi
 
