@@ -114,9 +114,9 @@ jobs:
                 old_id=$(docker inspect -f '{{.Image}}' "$name" 2>/dev/null || echo '')
 
                 if [ "$id" != "$old_id" ]; then
-                    service=$(echo "$name" | sed 's/.*_\(.*\)_[0-9]*$/\1/')
+                    service=$(echo "$name" | sed 's/.*-\(.*\)-[0-9]*$/\1/')
 
-                    echo "Restarting $service"
+                    echo "Restarting $service $id $old_id"
                     docker compose restart "$service"
                 fi
             done
