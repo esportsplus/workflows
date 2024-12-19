@@ -43,6 +43,13 @@ jobs:
             INSTALL=false
             PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
 
+            run() {
+              [ -z "$1" ] && return
+              echo "$1" | while read -r script; do
+                [ -n "$script" ] && chmod +x "$script" && "$script"
+              done
+            }
+
             mkdir -p /var/www && cd "$_"
 
             # Delete everything in `/var/www` excluding `/var/www/storage`
@@ -60,6 +67,7 @@ jobs:
             echo "${{ secrets.SSL_CERTIFICATE }}" > ./storage/ssl/certificate.pem
             echo "${{ secrets.SSL_PRIVATE_KEY }}" > ./storage/ssl/key.pem
 
+            # Install Docker Compose
             if ! command -v docker compose &> /dev/null
             then
               INSTALL=true
@@ -71,55 +79,52 @@ jobs:
               sudo apt-get upgrade -y
               sudo apt-get dist-upgrade -y
 
-              # Install Docker
-                # Add Docker's official GPG key:
-                sudo apt-get update -y
-                sudo apt-get install -y ca-certificates curl gnupg
-                sudo install -m 0755 -d /etc/apt/keyrings
-                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-                sudo chmod a+r /etc/apt/keyrings/docker.gpg
+              # Add Docker's official GPG key:
+              sudo apt-get update -y
+              sudo apt-get install -y ca-certificates curl gnupg
+              sudo install -m 0755 -d /etc/apt/keyrings
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+              sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-                # Add Docker repository to Apt sources:
-                echo \
-                  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-                  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-                  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-                sudo apt-get update -y
+              # Add Docker repository to Apt sources:
+              echo \
+                "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+                "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+              sudo apt-get update -y
 
-                # Install
-                sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+              # Install
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-                if [ -n "${{ secrets.DEPLOY_POSTINSTALL }}" ]; then
-                  IFS=$'\n'
-                  for script in ${{ secrets.DEPLOY_POSTINSTALL }}; do
-                    chmod +x "$script"
-                    "$script"
-                  done
-                fi
+              run "${{ secrets.DEPLOY_POSTINSTALL }}"
             fi
 
+            # Fetch Application
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
 
-            if [ -n "${{ secrets.DEPLOY_PREBUILD }}" ]; then
-              IFS=$'\n'
-              for script in ${{ secrets.DEPLOY_PREBUILD }}; do
-                chmod +x "$script"
-                "$script"
-              done
-            fi
+            run "${{ secrets.DEPLOY_PREBUILD }}"
 
             docker compose ${DOCKER_COMPOSE_CONFIG} build
 
-            if [ -n "${{ secrets.DEPLOY_POSTBUILD }}" ]; then
-              IFS=$'\n'
-              for script in ${{ secrets.DEPLOY_POSTBUILD }}; do
-                chmod +x "$script"
-                "$script"
-              done
-            fi
+            run "${{ secrets.DEPLOY_POSTBUILD }}"
 
+            # Restart Services With New Images
+            docker compose ps -q | xargs docker inspect -f '{{.Id}} {{.Name}}' |
+            while read -r id name; do
+                old_id=$(docker inspect -f '{{.Image}}' "$name" 2>/dev/null || echo '')
+
+                if [ "$id" != "$old_id" ]; then
+                    service=$(echo "$name" | sed 's/.*_\(.*\)_[0-9]*$/\1/')
+
+                    echo "Restarting $service"
+                    docker compose restart "$service"
+                fi
+            done
+
+            # Cleanup or Start Containers If Fresh Install
             docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
+            # Cleanup
             docker system prune --filter until=24h --force
             docker builder prune --filter unused-for=24h --force
 
