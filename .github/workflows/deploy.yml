@@ -112,11 +112,13 @@ jobs:
             docker compose ps -q | xargs docker inspect -f '{{.Id}} {{.Name}}' |
             while read -r id name; do
                 old_id=$(docker inspect -f '{{.Image}}' "$name" 2>/dev/null || echo '')
+                old_id=${old_id#sha256:}
 
                 if [ "$id" != "$old_id" ]; then
                     service=$(echo "$name" | sed 's/.*-\(.*\)-[0-9]*$/\1/')
+                    service=${service#/}
 
-                    echo "Restarting $service $id $old_id"
+                    echo "Restarting $service $id $old_id $name"
                     docker compose restart "$service"
                 fi
             done
