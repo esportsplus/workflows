@@ -104,10 +104,9 @@ jobs:
             run "${{ secrets.DEPLOY_PREBUILD }}"
 
             docker compose ${DOCKER_COMPOSE_CONFIG} build
+            docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
             run "${{ secrets.DEPLOY_POSTBUILD }}"
-
-            docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
             docker system prune --force
             docker builder prune --force
