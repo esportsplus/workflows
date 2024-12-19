@@ -108,22 +108,22 @@ jobs:
 
             run "${{ secrets.DEPLOY_PREBUILD }}"
 
-            INITIAL_IDS=$(get_image_ids)
+            # INITIAL_IDS=$(get_image_ids)
 
             docker compose ${DOCKER_COMPOSE_CONFIG} build
 
-            NEW_IDS=$(get_image_ids)
+            # NEW_IDS=$(get_image_ids)
 
             run "${{ secrets.DEPLOY_POSTBUILD }}"
 
             # Restart Services With New Images
-            echo "$initial_ids" | while IFS=: read -r service initial_image; do
-              new_image=$(echo "$new_ids" | grep "^$service:" | cut -d: -f2)
-              if [ "$initial_image" != "$new_image" ]; then
-                echo "Restarting $service"
-                docker compose restart "$service"
-              fi
-            done
+            # echo "$initial_ids" | while IFS=: read -r service initial_image; do
+            #   new_image=$(echo "$new_ids" | grep "^$service:" | cut -d: -f2)
+            #   if [ "$initial_image" != "$new_image" ]; then
+            #     echo "Restarting $service"
+            #     docker compose restart "$service"
+            #   fi
+            # done
 
             # Cleanup or Start Containers If Fresh Install
             docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
