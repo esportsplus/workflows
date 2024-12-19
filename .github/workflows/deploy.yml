@@ -43,10 +43,6 @@ jobs:
             INSTALL=false
             PULL="https://raw.githubusercontent.com/esportsplus/git/main/scripts/pull"
 
-            get_image_ids() {
-              docker compose config --format json | jq -r '.services | to_entries[] | .key + ":" + .value.image'
-            }
-
             run() {
               [ -z "$1" ] && return
               echo "$1" | while read -r script; do
@@ -103,32 +99,16 @@ jobs:
               run "${{ secrets.DEPLOY_POSTINSTALL }}"
             fi
 
-            # Fetch Application
             curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
 
             run "${{ secrets.DEPLOY_PREBUILD }}"
 
-            # INITIAL_IDS=$(get_image_ids)
-
             docker compose ${DOCKER_COMPOSE_CONFIG} build
-
-            # NEW_IDS=$(get_image_ids)
 
             run "${{ secrets.DEPLOY_POSTBUILD }}"
 
-            # Restart Services With New Images
-            # echo "$initial_ids" | while IFS=: read -r service initial_image; do
-            #   new_image=$(echo "$new_ids" | grep "^$service:" | cut -d: -f2)
-            #   if [ "$initial_image" != "$new_image" ]; then
-            #     echo "Restarting $service"
-            #     docker compose restart "$service"
-            #   fi
-            # done
-
-            # Cleanup or Start Containers If Fresh Install
             docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
-            # Cleanup
             docker system prune --filter until=24h --force
             docker builder prune --filter unused-for=24h --force
 
