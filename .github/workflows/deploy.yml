@@ -109,8 +109,8 @@ jobs:
 
             docker compose ${DOCKER_COMPOSE_CONFIG} up --detach --remove-orphans
 
-            docker system prune --filter until=24h --force
-            docker builder prune --filter unused-for=24h --force
+            docker system prune --force
+            docker builder prune --force
 
             if ${INSTALL}; then
               sudo reboot
