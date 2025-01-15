@@ -99,7 +99,7 @@ jobs:
               run "${{ secrets.DEPLOY_POSTINSTALL }}"
             fi
 
-            curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${DEPLOY_DESTINATION}
+            curl -s ${PULL} | bash /dev/stdin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git ${{ github.head_ref || github.ref_name }} ${DEPLOY_DESTINATION}
 
             run "${{ secrets.DEPLOY_PREBUILD }}"
 
