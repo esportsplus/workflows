@@ -3,8 +3,6 @@ name: dependabot automerge
 on:
   workflow_call:
     secrets:
-      ACCESS_TOKEN:
-        required: true
       NPM_TOKEN:
         required: true
 
@@ -37,7 +35,8 @@ jobs:
   automerge:
     needs: build
     permissions:
-      pull-requests: read
+      pull-requests: write
+      contents: write
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' }}
     steps:
