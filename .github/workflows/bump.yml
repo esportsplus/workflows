@@ -1,10 +1,13 @@
 name: bump
+
 on:
   push:
     branches: '**' # only trigger on branches, not on tags
   workflow_call:
+
 permissions:
   contents: write
+
 jobs:
   bump:
     runs-on: ubuntu-latest
