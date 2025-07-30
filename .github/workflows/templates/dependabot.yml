@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   automerge:
+    uses: esportsplus/workflows/.github/workflows/dependabot.yml@main
     secrets:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-    uses: esportsplus/workflows/.github/workflows/dependabot.yml@main
