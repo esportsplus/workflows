@@ -4,8 +4,12 @@ on:
     types: [opened, synchronize, labeled]
   workflow_dispatch:
 jobs:
-  automerge:
-    uses: esportsplus/workflows/.github/workflows/dependabot.yml@main
+  build:
     secrets:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    uses: esportsplus/workflows/.github/workflows/dependabot.yml@main
+  automerge:
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+    uses: esportsplus/workflows/.github/workflows/dependabot.yml@main
