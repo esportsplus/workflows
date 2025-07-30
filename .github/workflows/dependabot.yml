@@ -1,8 +1,10 @@
 name: dependabot auto merge
 
 on:
-  pull_request:
-    types: [opened, synchronize, labeled]
+  workflow_call:
+    secrets:
+      ACCESS_TOKEN:
+        required: true
 
 permissions:
   contents: write
