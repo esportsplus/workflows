@@ -15,20 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           run_install: false
-          version: 10
       - uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
           node-version: 'latest'
           registry-url: 'https://registry.npmjs.org'
-      - run: pnpm i
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm build
+      - run: pnpm i && pnpm build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
