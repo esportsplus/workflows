@@ -27,6 +27,7 @@ jobs:
         name: Install pnpm
         with:
           run_install: false
+          version: latest
       - uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
